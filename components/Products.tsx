@@ -3,7 +3,7 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { request } from '@/services/request';
 import { AuthContext } from '@/context/AuthContext';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 type Product = {
     name: string;
@@ -25,7 +25,7 @@ const ProductsPage = () => {
         } else {
             const fetchProducts = async () => {
                 try {
-                    const data = await request<Product[]>('http://localhost:5000/products', {
+                    const data = await request<Product[]>('http://localhost:3000/products', {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',

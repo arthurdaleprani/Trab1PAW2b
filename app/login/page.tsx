@@ -1,43 +1,56 @@
-"use client";
 
-import { AuthContext, SignIdData } from "@/context/AuthContext";
-import { useForm } from 'react-hook-form';
-import { useContext } from "react";
+"use client"; 
 
-const Login = () => {
-    const { register, handleSubmit } = useForm<SignIdData>();
+import { useContext, useState } from 'react';
+import { AuthContext, SignIdData } from '../../context/AuthContext'; 
+import { useRouter } from 'next/navigation'; 
+
+const Login: React.FC = () => {
     const { login, authError } = useContext(AuthContext);
+    const router = useRouter();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState<string | null>(null);
 
-    const handleLogin = async (data: SignIdData) => {
-        await login(data);
-    }
+    const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        try {
+            await login({ username, password });
+        } catch (error) {
+            console.error('Erro ao fazer login:', error);
+            setError('Erro ao fazer login.');
+        }
+    };
 
     return (
         <div className="flex flex-col items-center justify-center h-screen">
-            <form className="flex flex-col p-4 border rounded" onSubmit={handleSubmit(handleLogin)}>
-                <label htmlFor="username">Usuário: </label>
+            <h2 className="text-2xl font-bold mb-4">Login</h2>
+            <form onSubmit={handleLogin} className="flex flex-col p-4 border rounded">
+                <label htmlFor="username" className="mb-2">Usuário:</label>
                 <input
-                    {...register('username')}
                     type="text"
-                    name='username'
-                    id='username'
-                    placeholder="username"
-                    className="mb-2 p-2 border rounded"
+                    id="username"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="p-2 mb-2 border rounded"
+                    required
                 />
-                <label htmlFor="password">Senha: </label>
+                <label htmlFor="password" className="mb-2">Senha:</label>
                 <input
-                    {...register('password')}
                     type="password"
-                    name='password'
-                    id='password'
-                    placeholder="password"
-                    className="mb-2 p-2 border rounded"
+                    id="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="p-2 mb-2 border rounded"
+                    required
                 />
-                <input type="submit" value="Acessar" className="p-2 bg-blue-500 text-white rounded" />
+                <button type="submit" className="p-2 bg-blue-500 text-white rounded">Acessar</button>
             </form>
             {authError && <p className="mt-4 text-red-500">{authError}</p>}
+            {error && <p className="mt-4 text-red-500">{error}</p>}
         </div>
     );
-}
+};
 
 export default Login;

@@ -1,21 +1,29 @@
-import Produtos from "@/components/Products";
-import React from 'react';
+// pages/products.tsx
 
-const Product = async ({}) => {
+// Use 'use client' to mark this file as a Client Component
+"use client";
+
+import { useContext, useEffect } from 'react';
+import { AuthContext } from '../../context/AuthContext';
+import { useRouter } from 'next/navigation'; // Importe correto para useRouter
+
+const ProductsPage: React.FC = () => {
+  const { isAuthenticated } = useContext(AuthContext);
+  const router = useRouter();
+
+  useEffect(() => {
+    // Se o usuário não estiver autenticado, redireciona para a página de login
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
   return (
-    <main className="h-screen">
-      <h1 className="text-2xl sm:text-4xl font-black tracking-wide text-center pt-6 pb-10 sm:pb-24">
-        Seus Produtos
-      </h1>
-
-      <div className="grid place-items-center">
-        
-          <Produtos />
-       
-        
-      </div>
-    </main>
+    <div>
+      <h1>Produtos</h1>
+      {/* Conteúdo da página de produtos */}
+    </div>
   );
 };
 
-export default Product;
+export default ProductsPage;
